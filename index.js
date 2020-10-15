@@ -52,6 +52,13 @@ client.connect(err => {
             })
     })
 
+    app.get('/order', (req, res) => {
+        orderCollection.find({})
+            .toArray((err, documents) => {
+                res.send(documents);
+            })
+    })
+
     app.post('/addService', (req, res) => {
         const file = req.files.file;
         const name = req.body.name;
@@ -104,7 +111,9 @@ client.connect(err => {
         const name = req.body.name;
         const email = req.body.email;
         const price = req.body.price;
+        const productName = req.body.productName;
         const productDetails = req.body.productDetails;
+        const status = req.body.status;
         const filePath = `${__dirname}/orders/${file.name}`;
 
         file.mv(filePath, err => {
@@ -120,9 +129,7 @@ client.connect(err => {
                 img: Buffer(encImg, 'base64')
             }
 
-            console.log(name, email, price, productDetails, image);
-
-            orderCollection.insertOne({ name, email, price, productDetails, image })
+            orderCollection.insertOne({ name, email, price, productName, productDetails, status, image })
                 .then(result => {
                     fs.remove(filePath, err => {
                         if (err) {
