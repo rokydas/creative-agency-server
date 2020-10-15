@@ -100,6 +100,32 @@ client.connect(err => {
             })
     })
 
+    // app.post('/addOrder', (req, res) => {
+    //     const file = req.files.file;
+    //     const name = req.body.name;
+    //     const email = req.body.email;
+    //     const price = req.body.price;
+    //     const productName = req.body.productName;
+    //     const productDetails = req.body.productDetails;
+    //     const status = req.body.status;
+    //     const filePath = `${__dirname}/orders/${file.name}`;
+
+    //     const newImg = fs.readFileSync(filePath);
+    //     const encImg = newImg.toString('base64');
+
+    //     const image = {
+    //         contextType: file.mimetype,
+    //         size: file.size,
+    //         img: Buffer.from(encImg, 'base64')
+    //     }
+
+    //     orderCollection.insertOne({ name, email, price, productName, productDetails, status, image })
+    //         .then(result => {
+    //             console.log(result);
+    //             res.send(result.insertedCount > 0)
+    //         })
+    // })
+
     app.post('/addOrder', (req, res) => {
         const file = req.files.file;
         const name = req.body.name;
@@ -110,20 +136,36 @@ client.connect(err => {
         const status = req.body.status;
         const filePath = `${__dirname}/orders/${file.name}`;
 
-        const newImg = fs.readFileSync(filePath);
-        const encImg = newImg.toString('base64');
+        file.mv(filePath, err => {
+            if (err) {
+                return res.status(500).send('msg: Unable to Upload')
+            }
+            const newImg = fs.readFileSync(filePath);
+            const encImg = newImg.toString('base64');
 
-        const image = {
-            contextType: file.mimetype,
-            size: file.size,
-            img: Buffer.from(encImg, 'base64')
-        }
+            const image = {
+                contextType: req.files.file.mimetype,
+                size: req.files.size,
+                img: Buffer(encImg, 'base64')
+            }
 
-        orderCollection.insertOne({ name, email, price, productName, productDetails, status, image })
-            .then(result => {
-                console.log(result);
-                res.send(result.insertedCount > 0)
-            })
+            console.log(name, email, price, productDetails, image);
+
+            orderCollection.insertOne({ name, email, price, productName, productDetails, status, image })
+                .then(result => {
+                    fs.remove(filePath, err => {
+                        if (err) {
+                            console.log(err)
+                        }
+                        else {
+                            console.log(result);
+                            res.send(result.insertedCount > 0)
+                        }
+                    });
+
+                })
+
+        })
     })
 
 });
