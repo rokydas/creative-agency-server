@@ -63,35 +63,20 @@ client.connect(err => {
         const file = req.files.file;
         const name = req.body.name;
         const description = req.body.description;
-        const filePath = `${__dirname}/services/${file.name}`;
+        const newImg = file.data;
+        const encImg = newImg.toString('base64');
 
-        file.mv(filePath, err => {
-            if (err) {
-                return res.status(500).send('msg: Unable to Upload')
-            }
-            const newImg = fs.readFileSync(filePath);
-            const encImg = newImg.toString('base64');
+        const image = {
+            contextType: file.mimetype,
+            size: file.size,
+            img: Buffer.from(encImg, 'base64')
+        }
 
-            const image = {
-                contextType: req.files.file.mimetype,
-                size: req.files.size,
-                img: Buffer(encImg, 'base64')
-            }
+        serviceCollection.insertOne({ name, description, image })
+            .then(result => {
+                res.send(result.insertedCount > 0)
+            })
 
-            serviceCollection.insertOne({ name, description, image })
-                .then(result => {
-                    fs.remove(filePath, err => {
-                        if (err) {
-                            console.log(err)
-                        }
-                        else {
-                            res.send(result.insertedCount > 0)
-                        }
-                    });
-
-                })
-
-        })
     })
 
     app.post('/addFeedback', (req, res) => {
@@ -101,18 +86,18 @@ client.connect(err => {
         const designation = req.body.designation;
 
         feedbackCollection.insertOne({ name, designation, description, img })
-        .then(result => {
-            res.send(result.insertedCount > 0)
-        })
+            .then(result => {
+                res.send(result.insertedCount > 0)
+            })
     })
 
     app.post('/makeAdmin', (req, res) => {
         const email = req.body.email;
 
         adminCollection.insertOne({ email })
-        .then(result => {
-            res.send(result.insertedCount > 0)
-        })
+            .then(result => {
+                res.send(result.insertedCount > 0)
+            })
     })
 
     app.post('/addOrder', (req, res) => {
@@ -125,42 +110,24 @@ client.connect(err => {
         const status = req.body.status;
         const filePath = `${__dirname}/orders/${file.name}`;
 
-        file.mv(filePath, err => {
-            if (err) {
-                return res.status(500).send('msg: Unable to Upload')
-            }
-            const newImg = fs.readFileSync(filePath);
-            const encImg = newImg.toString('base64');
+        const newImg = fs.readFileSync(filePath);
+        const encImg = newImg.toString('base64');
 
-            const image = {
-                contextType: req.files.file.mimetype,
-                size: req.files.size,
-                img: Buffer(encImg, 'base64')
-            }
+        const image = {
+            contextType: file.mimetype,
+            size: file.size,
+            img: Buffer.from(encImg, 'base64')
+        }
 
-            orderCollection.insertOne({ name, email, price, productName, productDetails, status, image })
-                .then(result => {
-                    fs.remove(filePath, err => {
-                        if (err) {
-                            console.log(err)
-                        }
-                        else {
-                            console.log(result);
-                            res.send(result.insertedCount > 0)
-                        }
-                    });
-
-                })
-
-        })
+        orderCollection.insertOne({ name, email, price, productName, productDetails, status, image })
+            .then(result => {
+                console.log(result);
+                res.send(result.insertedCount > 0)
+            })
     })
 
 });
 
 
 
-
-
-
-
-app.listen(5000); 
+app.listen(process.env.PORT || 5000); 
