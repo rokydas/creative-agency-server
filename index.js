@@ -106,6 +106,15 @@ client.connect(err => {
         })
     })
 
+    app.post('/makeAdmin', (req, res) => {
+        const email = req.body.email;
+
+        adminCollection.insertOne({ email })
+        .then(result => {
+            res.send(result.insertedCount > 0)
+        })
+    })
+
     app.post('/addOrder', (req, res) => {
         const file = req.files.file;
         const name = req.body.name;
