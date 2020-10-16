@@ -125,6 +125,19 @@ client.connect(err => {
 
     })
 
+    app.patch('/updateStatus/:id', (req, res) => {
+        console.log(req.params.id, req.body.status);
+        // orderCollection.updateOne({ _id: ObjectId(req.params.id) }, {
+        //     $set: { status: 'Done' }
+        // })
+        //     .then(result => {
+        //         // console.log(result);
+        //         res.send(result.modifiedCount > 0)
+        //     })
+
+
+    })
+
 });
 
 
