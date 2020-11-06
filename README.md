@@ -10,9 +10,15 @@ In this website, two types of people can log in or sign up here. One is admin an
 - User can submit a review about a service, which are shown in the homepage randomly.
 - User can see some work's demo by creative agency in auto slider in home page by creative agency.
 
-There are two github repository for this project. One is for server side and another is for client side.
-[Client side repo link](https://github.com/rokydas/creative-agency-client)
-[Server side repo link](https://github.com/rokydas/creative-agency-server)
+## Frond-end Technology: 
+- HTML5
+- CSS3
+- Bootstrap4
+- React Js
 
-**Technology for frond-end: HTML5, CSS3, Bootstrap4, React Js.**
-**Technology for back-end: MongoDB, Node Js, Express Js.**
+## Back-end Technology:
+- MongoDB
+- Node Js
+- Express Js
+
+You can visit [Creative Agency Client](https://github.com/rokydas/creative-agency-client)
